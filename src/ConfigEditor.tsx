@@ -22,6 +22,12 @@ const EditorProps: { ConfigEditor: GrafanaDatasourceConfigProps } = {
         placeholder: 'Bar string value goes here',
       },
       {
+        key: 'apiKey',
+        type: 'secureString',
+        label: 'API Key',
+        tooltip: 'Your secure API key',
+      },
+      {
         key: 'magicNumber',
         type: 'number',
         label: 'Magic Number',

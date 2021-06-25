@@ -1,11 +1,11 @@
 import React from 'react';
 import { get, set, cloneDeep } from 'lodash';
 import { DataSourcePluginOptionsEditorProps, SelectableValue } from '@grafana/data';
-import { DataSourceHttpSettings, InlineFormLabel, Input, Select, Switch, useTheme } from '@grafana/ui';
+import { DataSourceHttpSettings, InlineFormLabel, Input, Button, Select, Switch, useTheme } from '@grafana/ui';
 
 type NoCodeJsonOptions = {};
 
-type propType = 'string' | 'number' | 'boolean'; // | 'secureString';
+type propType = 'string' | 'number' | 'boolean' | 'secureString';
 export type GrafanaDatasourceConfigProps = {
   DefaultHTTPSettings?: {
     EnableEditor: boolean;
@@ -36,6 +36,24 @@ export const NoCodeConfigComponent = (props: NoCodeConfigComponentProps) => {
   const onJSONOptionsChange = (key: string, value: any, type: propType) => {
     const newOptions = cloneDeep(options);
     set(newOptions, `jsonData.${key}`, type === 'number' ? +value : value);
+    onOptionsChange(newOptions);
+  };
+  const getSecureValueFromOptions = (key: string): string => {
+    return get(options, `secureJsonData.${key}`) || '';
+  };
+  const isSecureFieldConfigured = (key: string) => {
+    return get(options, `secureJsonFields.${key}`) && !get(options, `secureJsonData.${key}`);
+  };
+  const resetSecureKey = (key: string) => {
+    const newOptions = cloneDeep(options);
+    set(newOptions, `secureJsonFields.${key}`, false);
+    set(newOptions, `secureJsonData.${key}`, '');
+    onOptionsChange(newOptions);
+  };
+  const onSecureJSONOptionsChange = (key: string, value: string) => {
+    const newOptions = cloneDeep(options);
+    set(newOptions, `secureJsonFields.${key}`, true);
+    set(newOptions, `secureJsonData.${key}`, value);
     onOptionsChange(newOptions);
   };
   const switchContainerStyle: React.CSSProperties = {
@@ -73,7 +91,7 @@ export const NoCodeConfigComponent = (props: NoCodeConfigComponentProps) => {
                       css={{}}
                       className="width-20"
                       placeholder={prop.placeholder}
-                      value={getValueFromOptions(prop.key) || '0'}
+                      value={getValueFromOptions(prop.key) || (prop.type === 'number' ? '0' : '')}
                       onChange={(e) => onJSONOptionsChange(prop.key, e.currentTarget.value, prop.type)}
                     />
                   )}
@@ -87,6 +105,29 @@ export const NoCodeConfigComponent = (props: NoCodeConfigComponentProps) => {
                     onChange={(e) => onJSONOptionsChange(prop.key, e.currentTarget.checked, prop.type)}
                   />
                 </div>
+              )}
+              {prop.type === 'secureString' && (
+                <>
+                  {isSecureFieldConfigured(prop.key) ? (
+                    <>
+                      <input type="text" className="gf-form-input width-15" disabled={true} value="configured" />
+                      <Button onClick={() => resetSecureKey(prop.key)} variant="secondary">
+                        Reset
+                      </Button>
+                    </>
+                  ) : (
+                    <>
+                      <Input
+                        css={{}}
+                        className="width-20"
+                        type="password"
+                        placeholder={prop.placeholder}
+                        value={getSecureValueFromOptions(prop.key) || ''}
+                        onChange={(e) => onSecureJSONOptionsChange(prop.key, e.currentTarget.value)}
+                      />
+                    </>
+                  )}
+                </>
               )}
             </div>
           </>
