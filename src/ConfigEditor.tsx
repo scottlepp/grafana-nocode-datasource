@@ -22,6 +22,13 @@ const EditorProps: { ConfigEditor: GrafanaDatasourceConfigProps } = {
         placeholder: 'Bar string value goes here',
       },
       {
+        key: 'bazString',
+        type: 'string',
+        label: ' Bax',
+        group: 'Group 1',
+        placeholder: 'Baz string value goes here',
+      },
+      {
         key: 'apiKey',
         type: 'secureString',
         label: 'API Key',
@@ -55,7 +62,7 @@ const EditorProps: { ConfigEditor: GrafanaDatasourceConfigProps } = {
         tooltip: 'Region of the API',
         options: [
           {
-            value: 'useast',
+            value: 'us-east',
             label: 'US East',
           },
           {
@@ -63,6 +70,22 @@ const EditorProps: { ConfigEditor: GrafanaDatasourceConfigProps } = {
             label: 'Europe',
           },
         ],
+      },
+
+      {
+        key: 'magicNumber2',
+        type: 'number',
+        group: 'Group 2',
+        label: 'Magic Number 2',
+        tooltip: 'Magic Number tooltip',
+      },
+
+      {
+        key: 'magicNumber3',
+        type: 'number',
+        group: 'Group 1',
+        label: 'Magic Number',
+        tooltip: 'Magic Number tooltip',
       },
     ],
   },
