@@ -1,0 +1,23 @@
+{
+  "$schema": "https://raw.githubusercontent.com/grafana/grafana/master/docs/sources/developers/plugins/plugin.schema.json",
+  "name": "No Code",
+  "id": "grafana-nocode-datasource",
+  "type": "datasource",
+  "metrics": true,
+  "info": {
+    "author": {
+      "name": "Grafana Labs"
+    },
+    "description": "No code datasource for Grafana",
+    "logos": {
+      "small": "img/nocode.png",
+      "large": "img/nocode.png"
+    },
+    "keywords": ["no-code"],
+    "version": "%VERSION%",
+    "updated": "%TODAY%"
+  },
+  "dependencies": {
+    "grafanaDependency": "7.3.0"
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "name": "grafana-nocode-datasource",
+  "version": "0.0.1",
+  "description": "Grafana datasource plugin experiment to generate editor UI without code",
+  "main": "index.js",
+  "scripts": {
+    "dev": "grafana-toolkit plugin:dev",
+    "watch": "grafana-toolkit plugin:dev --watch",
+    "start": "yarn watch",
+    "test": "grafana-toolkit plugin:test",
+    "build": "grafana-toolkit plugin:build",
+    "ci-build": "grafana-toolkit plugin:ci-build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yesoreyeram/grafana-nocode-datasource.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/yesoreyeram/grafana-nocode-datasource/issues"
+  },
+  "homepage": "https://github.com/yesoreyeram/grafana-nocode-datasource#readme",
+  "dependencies": {
+    "@grafana/data": "7.3.0",
+    "@grafana/ui": "7.3.0"
+  },
+  "devDependencies": {
+    "@grafana/toolkit": "8.0.3"
+  }
+}
