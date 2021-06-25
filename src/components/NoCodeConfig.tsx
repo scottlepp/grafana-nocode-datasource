@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { get, set, cloneDeep, uniq } from 'lodash';
 import { DataSourcePluginOptionsEditorProps, SelectableValue } from '@grafana/data';
 import {
   DataSourceHttpSettings,
+  Collapse,
   InlineFormLabel,
   Input,
   TextArea,
@@ -27,22 +28,39 @@ type EditorProperty = {
   group?: string;
 };
 export type GrafanaDatasourceConfigProps = {
+  general?: {
+    useCollapse?: boolean;
+  };
   defaultHTTPSettings?: {
-    enableEditor: boolean;
+    enabled: boolean;
     defaultURL: string;
   };
   properties?: EditorProperty[];
 };
 
-const GroupWrapper: React.FC<{ name?: string }> = ({ name, children }) => {
-  return (
+const GroupWrapper: React.FC<{ name?: string; useCollapse?: boolean }> = ({ name, children, useCollapse }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  return name ? (
     <>
-      {name && <h4>{name}</h4>}
+      {useCollapse ? (
+        <Collapse label={name} collapsible={true} isOpen={isOpen} onToggle={() => setIsOpen(!isOpen)}>
+          {children}
+        </Collapse>
+      ) : (
+        <>
+          <h4>{name}</h4>
+          {children}
+          <br />
+        </>
+      )}
+    </>
+  ) : (
+    <>
       {children}
+      <br />
     </>
   );
 };
-
 export type NoCodeConfigComponentProps = DataSourcePluginOptionsEditorProps<NoCodeJsonOptions> & {
   editorProps: GrafanaDatasourceConfigProps;
 };
@@ -95,7 +113,7 @@ export const NoCodeConfigComponent = (props: NoCodeConfigComponentProps) => {
   };
   return (
     <>
-      {editorProps.defaultHTTPSettings?.enableEditor && (
+      {editorProps.defaultHTTPSettings?.enabled && (
         <DataSourceHttpSettings
           onChange={onOptionsChange}
           dataSourceConfig={options}
@@ -104,7 +122,7 @@ export const NoCodeConfigComponent = (props: NoCodeConfigComponentProps) => {
       )}
       {groups.map((g) => {
         return (
-          <GroupWrapper name={g.name} key={g.name}>
+          <GroupWrapper name={g.name} key={g.name} useCollapse={editorProps.general?.useCollapse}>
             {g.props.map((prop: EditorProperty) => {
               return (
                 <div className="gf-form" key={JSON.stringify(prop)}>
@@ -195,8 +213,6 @@ export const NoCodeConfigComponent = (props: NoCodeConfigComponentProps) => {
                 </div>
               );
             })}
-            <br />
-            <br />
           </GroupWrapper>
         );
       })}
