@@ -27,6 +27,37 @@ const EditorProps: { ConfigEditor: GrafanaDatasourceConfigProps } = {
         label: 'Magic Number',
         tooltip: 'Magic Number tooltip',
       },
+      {
+        key: 'isPremium',
+        type: 'boolean',
+        label: 'Enable premium?',
+      },
+      {
+        key: 'concurrency',
+        type: 'number',
+        label: 'Concurrency',
+        options: [
+          { value: 1, label: 'Minimum' },
+          { value: 2, label: 'Medium' },
+          { value: 3, label: 'Maximum' },
+        ],
+      },
+      {
+        key: 'region',
+        type: 'string',
+        label: 'Region',
+        tooltip: 'Region of the API',
+        options: [
+          {
+            value: 'useast',
+            label: 'US East',
+          },
+          {
+            value: 'europe',
+            label: 'Europe',
+          },
+        ],
+      },
     ],
   },
 };
