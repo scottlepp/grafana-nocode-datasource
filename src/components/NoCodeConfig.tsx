@@ -13,6 +13,7 @@ type EditorProperty = {
   label?: string;
   tooltip?: string;
   placeholder?: string;
+  outsideJSON?: boolean;
   group?: string;
 };
 export type GrafanaDatasourceConfigProps = {
@@ -42,35 +43,38 @@ export const NoCodeConfigComponent = (props: NoCodeConfigComponentProps) => {
   const groups: Array<{ name?: string; props: EditorProperty[] }> = [
     { name: '', props: editorProps.Properties?.filter((p) => !p.group) || [] },
   ];
+  const PREFIX_JSON_DATA = 'jsonData';
+  const PREFIX_SECURE_JSON_DATA = 'secureJsonData';
+  const PREFIX_SECURE_JSON_FIELDS = 'secureJsonFields';
   uniq(editorProps.Properties?.map((p) => p.group))
     .filter(Boolean)
     .forEach((g) => {
       groups.push({ name: g, props: editorProps.Properties?.filter((p) => p.group === g) || [] });
     });
-  const getValueFromOptions = (key: string) => {
-    return get(options, `jsonData.${key}`);
+  const getValueFromOptions = (key: string, outsideJSON?: boolean) => {
+    return get(options, `${outsideJSON ? '' : PREFIX_JSON_DATA + '.'}${key}`);
   };
-  const onJSONOptionsChange = (key: string, value: any, type: propType) => {
+  const onJSONOptionsChange = (key: string, value: any, type: propType, outsideJSON?: boolean) => {
     const newOptions = cloneDeep(options);
-    set(newOptions, `jsonData.${key}`, type === 'number' ? +value : value);
+    set(newOptions, `${outsideJSON ? '' : PREFIX_JSON_DATA + '.'}${key}`, type === 'number' ? +value : value);
     onOptionsChange(newOptions);
   };
   const getSecureValueFromOptions = (key: string): string => {
-    return get(options, `secureJsonData.${key}`) || '';
+    return get(options, `${PREFIX_SECURE_JSON_DATA}.${key}`) || '';
   };
   const isSecureFieldConfigured = (key: string) => {
-    return get(options, `secureJsonFields.${key}`) && !get(options, `secureJsonData.${key}`);
+    return get(options, `${PREFIX_SECURE_JSON_FIELDS}.${key}`) && !get(options, `${PREFIX_SECURE_JSON_DATA}.${key}`);
   };
   const resetSecureKey = (key: string) => {
     const newOptions = cloneDeep(options);
-    set(newOptions, `secureJsonFields.${key}`, false);
-    set(newOptions, `secureJsonData.${key}`, '');
+    set(newOptions, `${PREFIX_SECURE_JSON_FIELDS}.${key}`, false);
+    set(newOptions, `${PREFIX_SECURE_JSON_DATA}.${key}`, '');
     onOptionsChange(newOptions);
   };
   const onSecureJSONOptionsChange = (key: string, value: string) => {
     const newOptions = cloneDeep(options);
-    set(newOptions, `secureJsonFields.${key}`, true);
-    set(newOptions, `secureJsonData.${key}`, value);
+    set(newOptions, `${PREFIX_SECURE_JSON_FIELDS}.${key}`, true);
+    set(newOptions, `${PREFIX_SECURE_JSON_DATA}.${key}`, value);
     onOptionsChange(newOptions);
   };
   const switchContainerStyle: React.CSSProperties = {
@@ -91,7 +95,7 @@ export const NoCodeConfigComponent = (props: NoCodeConfigComponentProps) => {
       {groups.map((g) => {
         return (
           <GroupWrapper name={g.name} key={g.name}>
-            {g.props.map((prop: any) => {
+            {g.props.map((prop: EditorProperty) => {
               return (
                 <div className="gf-form" key={JSON.stringify(prop)}>
                   <InlineFormLabel tooltip={prop.tooltip}>{prop.label || prop.key}</InlineFormLabel>
@@ -100,8 +104,8 @@ export const NoCodeConfigComponent = (props: NoCodeConfigComponentProps) => {
                       {prop.options && prop.options.length > 0 ? (
                         <Select
                           className="width-20"
-                          onChange={(e) => onJSONOptionsChange(prop.key, e.value, prop.type)}
-                          value={getValueFromOptions(prop.key)}
+                          onChange={(e) => onJSONOptionsChange(prop.key, e.value, prop.type, prop.outsideJSON)}
+                          value={getValueFromOptions(prop.key, prop.outsideJSON)}
                           options={prop.options}
                         />
                       ) : (
@@ -109,8 +113,10 @@ export const NoCodeConfigComponent = (props: NoCodeConfigComponentProps) => {
                           css={{}}
                           className="width-20"
                           placeholder={prop.placeholder}
-                          value={getValueFromOptions(prop.key) || (prop.type === 'number' ? '0' : '')}
-                          onChange={(e) => onJSONOptionsChange(prop.key, e.currentTarget.value, prop.type)}
+                          value={getValueFromOptions(prop.key, prop.outsideJSON) || (prop.type === 'number' ? '0' : '')}
+                          onChange={(e) =>
+                            onJSONOptionsChange(prop.key, e.currentTarget.value, prop.type, prop.outsideJSON)
+                          }
                         />
                       )}
                     </>
@@ -119,8 +125,10 @@ export const NoCodeConfigComponent = (props: NoCodeConfigComponentProps) => {
                     <div style={switchContainerStyle}>
                       <Switch
                         css={{}}
-                        value={getValueFromOptions(prop.key)}
-                        onChange={(e) => onJSONOptionsChange(prop.key, e.currentTarget.checked, prop.type)}
+                        value={getValueFromOptions(prop.key, prop.outsideJSON)}
+                        onChange={(e) =>
+                          onJSONOptionsChange(prop.key, e.currentTarget.checked, prop.type, prop.outsideJSON)
+                        }
                       />
                     </div>
                   )}

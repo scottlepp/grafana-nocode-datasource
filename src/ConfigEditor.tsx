@@ -6,7 +6,7 @@ import { NoCodeJsonOptions } from './types';
 const EditorProps: { ConfigEditor: GrafanaDatasourceConfigProps } = {
   ConfigEditor: {
     DefaultHTTPSettings: {
-      EnableEditor: false,
+      EnableEditor: true,
       DefaultURL: 'http://nocode',
     },
     Properties: [
@@ -71,7 +71,6 @@ const EditorProps: { ConfigEditor: GrafanaDatasourceConfigProps } = {
           },
         ],
       },
-
       {
         key: 'magicNumber2',
         type: 'number',
@@ -79,13 +78,19 @@ const EditorProps: { ConfigEditor: GrafanaDatasourceConfigProps } = {
         label: 'Magic Number 2',
         tooltip: 'Magic Number tooltip',
       },
-
       {
         key: 'magicNumber3',
         type: 'number',
         group: 'Group 1',
         label: 'Magic Number',
         tooltip: 'Magic Number tooltip',
+      },
+      {
+        key: 'url',
+        type: 'string',
+        group: 'Outsiders',
+        label: 'URL',
+        outsideJSON: true,
       },
     ],
   },
