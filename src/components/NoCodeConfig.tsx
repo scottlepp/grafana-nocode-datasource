@@ -1,7 +1,16 @@
 import React from 'react';
 import { get, set, cloneDeep, uniq } from 'lodash';
 import { DataSourcePluginOptionsEditorProps, SelectableValue } from '@grafana/data';
-import { DataSourceHttpSettings, InlineFormLabel, Input, Button, Select, Switch, useTheme } from '@grafana/ui';
+import {
+  DataSourceHttpSettings,
+  InlineFormLabel,
+  Input,
+  TextArea,
+  Button,
+  Select,
+  Switch,
+  useTheme,
+} from '@grafana/ui';
 
 type NoCodeJsonOptions = {};
 
@@ -9,11 +18,12 @@ type propType = 'string' | 'number' | 'boolean' | 'secureString';
 type EditorProperty = {
   key: string;
   type: propType;
-  options?: Array<SelectableValue<string | number>>;
   label?: string;
   tooltip?: string;
   placeholder?: string;
   outsideJSON?: boolean;
+  options?: Array<SelectableValue<string | number>>;
+  multiLine?: boolean;
   group?: string;
 };
 export type GrafanaDatasourceConfigProps = {
@@ -98,7 +108,9 @@ export const NoCodeConfigComponent = (props: NoCodeConfigComponentProps) => {
             {g.props.map((prop: EditorProperty) => {
               return (
                 <div className="gf-form" key={JSON.stringify(prop)}>
-                  <InlineFormLabel tooltip={prop.tooltip}>{prop.label || prop.key}</InlineFormLabel>
+                  <InlineFormLabel className="width-13" tooltip={prop.tooltip}>
+                    {prop.label || prop.key}
+                  </InlineFormLabel>
                   {['string', 'number'].includes(prop.type) && (
                     <>
                       {prop.options && prop.options.length > 0 ? (
@@ -108,10 +120,22 @@ export const NoCodeConfigComponent = (props: NoCodeConfigComponentProps) => {
                           value={getValueFromOptions(prop.key, prop.outsideJSON)}
                           options={prop.options}
                         />
+                      ) : prop.multiLine ? (
+                        <TextArea
+                          css={{}}
+                          className="width-20"
+                          placeholder={prop.placeholder}
+                          value={getValueFromOptions(prop.key, prop.outsideJSON) || (prop.type === 'number' ? '0' : '')}
+                          onChange={(e) =>
+                            onJSONOptionsChange(prop.key, e.currentTarget.value, prop.type, prop.outsideJSON)
+                          }
+                          rows={4}
+                        />
                       ) : (
                         <Input
                           css={{}}
                           className="width-20"
+                          type={prop.type === 'number' ? 'number' : 'text'}
                           placeholder={prop.placeholder}
                           value={getValueFromOptions(prop.key, prop.outsideJSON) || (prop.type === 'number' ? '0' : '')}
                           onChange={(e) =>
@@ -143,14 +167,26 @@ export const NoCodeConfigComponent = (props: NoCodeConfigComponentProps) => {
                         </>
                       ) : (
                         <>
-                          <Input
-                            css={{}}
-                            className="width-20"
-                            type="password"
-                            placeholder={prop.placeholder}
-                            value={getSecureValueFromOptions(prop.key) || ''}
-                            onChange={(e) => onSecureJSONOptionsChange(prop.key, e.currentTarget.value)}
-                          />
+                          {prop.multiLine ? (
+                            <TextArea
+                              css={{}}
+                              className="min-width-20"
+                              type="password"
+                              placeholder={prop.placeholder}
+                              value={getSecureValueFromOptions(prop.key) || ''}
+                              onChange={(e) => onSecureJSONOptionsChange(prop.key, e.currentTarget.value)}
+                              rows={4}
+                            />
+                          ) : (
+                            <Input
+                              css={{}}
+                              className="width-20"
+                              type="password"
+                              placeholder={prop.placeholder}
+                              value={getSecureValueFromOptions(prop.key) || ''}
+                              onChange={(e) => onSecureJSONOptionsChange(prop.key, e.currentTarget.value)}
+                            />
+                          )}
                         </>
                       )}
                     </>
