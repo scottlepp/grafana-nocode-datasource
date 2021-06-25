@@ -27,11 +27,11 @@ type EditorProperty = {
   group?: string;
 };
 export type GrafanaDatasourceConfigProps = {
-  DefaultHTTPSettings?: {
-    EnableEditor: boolean;
-    DefaultURL: string;
+  defaultHTTPSettings?: {
+    enableEditor: boolean;
+    defaultURL: string;
   };
-  Properties?: EditorProperty[];
+  properties?: EditorProperty[];
 };
 
 const GroupWrapper: React.FC<{ name?: string }> = ({ name, children }) => {
@@ -51,15 +51,15 @@ export const NoCodeConfigComponent = (props: NoCodeConfigComponentProps) => {
   const theme = useTheme();
   const { options, onOptionsChange, editorProps } = props;
   const groups: Array<{ name?: string; props: EditorProperty[] }> = [
-    { name: '', props: editorProps.Properties?.filter((p) => !p.group) || [] },
+    { name: '', props: editorProps.properties?.filter((p) => !p.group) || [] },
   ];
   const PREFIX_JSON_DATA = 'jsonData';
   const PREFIX_SECURE_JSON_DATA = 'secureJsonData';
   const PREFIX_SECURE_JSON_FIELDS = 'secureJsonFields';
-  uniq(editorProps.Properties?.map((p) => p.group))
+  uniq(editorProps.properties?.map((p) => p.group))
     .filter(Boolean)
     .forEach((g) => {
-      groups.push({ name: g, props: editorProps.Properties?.filter((p) => p.group === g) || [] });
+      groups.push({ name: g, props: editorProps.properties?.filter((p) => p.group === g) || [] });
     });
   const getValueFromOptions = (key: string, outsideJSON?: boolean) => {
     return get(options, `${outsideJSON ? '' : PREFIX_JSON_DATA + '.'}${key}`);
@@ -95,11 +95,11 @@ export const NoCodeConfigComponent = (props: NoCodeConfigComponentProps) => {
   };
   return (
     <>
-      {editorProps.DefaultHTTPSettings?.EnableEditor && (
+      {editorProps.defaultHTTPSettings?.enableEditor && (
         <DataSourceHttpSettings
           onChange={onOptionsChange}
           dataSourceConfig={options}
-          defaultUrl={editorProps.DefaultHTTPSettings.DefaultURL}
+          defaultUrl={editorProps.defaultHTTPSettings.defaultURL}
         />
       )}
       {groups.map((g) => {

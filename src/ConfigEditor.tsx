@@ -4,11 +4,11 @@ import { NoCodeConfigComponent, GrafanaDatasourceConfigProps } from './component
 import { NoCodeJsonOptions } from './types';
 
 const properties: GrafanaDatasourceConfigProps = {
-  DefaultHTTPSettings: {
-    EnableEditor: true,
-    DefaultURL: 'http://nocode',
+  defaultHTTPSettings: {
+    enableEditor: true,
+    defaultURL: 'http://nocode',
   },
-  Properties: [
+  properties: [
     {
       key: 'fooString',
       type: 'string',
