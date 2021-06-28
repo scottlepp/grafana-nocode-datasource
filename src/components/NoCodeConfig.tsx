@@ -15,7 +15,7 @@ import {
 
 type NoCodeJsonOptions = {};
 
-type propType = 'string' | 'number' | 'boolean' | 'secureString';
+type propType = 'string' | 'number' | 'boolean' | 'component';
 type EditorProperty = {
   key: string;
   type: propType;
@@ -26,6 +26,9 @@ type EditorProperty = {
   options?: Array<SelectableValue<string | number>>;
   multiLine?: boolean;
   group?: string;
+  component?: any;
+  class?: string;
+  secure?: boolean;
 };
 export type GrafanaDatasourceConfigProps = {
   general?: {
@@ -79,38 +82,46 @@ export const NoCodeConfigComponent = (props: NoCodeConfigComponentProps) => {
     .forEach((g) => {
       groups.push({ name: g, props: editorProps.properties?.filter((p) => p.group === g) || [] });
     });
+
   const getValueFromOptions = (key: string, outsideJSON?: boolean) => {
     return get(options, `${outsideJSON ? '' : PREFIX_JSON_DATA + '.'}${key}`);
   };
+
   const onJSONOptionsChange = (key: string, value: any, type: propType, outsideJSON?: boolean) => {
     const newOptions = cloneDeep(options);
     set(newOptions, `${outsideJSON ? '' : PREFIX_JSON_DATA + '.'}${key}`, type === 'number' ? +value : value);
     onOptionsChange(newOptions);
   };
+
   const getSecureValueFromOptions = (key: string): string => {
     return get(options, `${PREFIX_SECURE_JSON_DATA}.${key}`) || '';
   };
+
   const isSecureFieldConfigured = (key: string) => {
     return get(options, `${PREFIX_SECURE_JSON_FIELDS}.${key}`) && !get(options, `${PREFIX_SECURE_JSON_DATA}.${key}`);
   };
+
   const resetSecureKey = (key: string) => {
     const newOptions = cloneDeep(options);
     set(newOptions, `${PREFIX_SECURE_JSON_FIELDS}.${key}`, false);
     set(newOptions, `${PREFIX_SECURE_JSON_DATA}.${key}`, '');
     onOptionsChange(newOptions);
   };
+
   const onSecureJSONOptionsChange = (key: string, value: string) => {
     const newOptions = cloneDeep(options);
     set(newOptions, `${PREFIX_SECURE_JSON_FIELDS}.${key}`, true);
     set(newOptions, `${PREFIX_SECURE_JSON_DATA}.${key}`, value);
     onOptionsChange(newOptions);
   };
+
   const switchContainerStyle: React.CSSProperties = {
     padding: `0 ${theme.spacing.sm}`,
     height: `${theme.spacing.formInputHeight}px`,
     display: 'flex',
     alignItems: 'center',
   };
+
   return (
     <>
       {editorProps.defaultHTTPSettings?.enabled && (
@@ -126,9 +137,19 @@ export const NoCodeConfigComponent = (props: NoCodeConfigComponentProps) => {
             {g.props.map((prop: EditorProperty) => {
               return (
                 <div className="gf-form" key={JSON.stringify(prop)}>
-                  <InlineFormLabel className="width-13" tooltip={prop.tooltip}>
-                    {prop.label || prop.key}
-                  </InlineFormLabel>
+                  {prop.label && 
+                    <InlineFormLabel className="width-13" tooltip={prop.tooltip}>
+                      {prop.label || prop.key}
+                    </InlineFormLabel>
+                  }
+                  {'component' === prop.type && 
+                    React.createElement(prop.component, {
+                      key: prop.key,
+                      className: prop.class,
+                      value: !prop.secure ? getValueFromOptions(prop.key, prop.outsideJSON) : getSecureValueFromOptions(prop.key),
+                      onChange: (e: any) => !prop.secure ? onJSONOptionsChange(prop.key, e.value, prop.type, prop.outsideJSON) : onSecureJSONOptionsChange(prop.key, e.value)
+                    })
+                  }
                   {['string', 'number'].includes(prop.type) && (
                     <>
                       {prop.options && prop.options.length > 0 ? (
@@ -174,7 +195,7 @@ export const NoCodeConfigComponent = (props: NoCodeConfigComponentProps) => {
                       />
                     </div>
                   )}
-                  {prop.type === 'secureString' && (
+                  {prop.secure === true && prop.type === 'string' && (
                     <>
                       {isSecureFieldConfigured(prop.key) ? (
                         <>

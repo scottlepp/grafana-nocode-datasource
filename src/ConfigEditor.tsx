@@ -2,39 +2,34 @@ import React from 'react';
 import { DataSourcePluginOptionsEditorProps } from '@grafana/data';
 import { NoCodeConfigComponent, GrafanaDatasourceConfigProps } from './components/NoCodeConfig';
 import { NoCodeJsonOptions } from './types';
-
+import {
+  Input,
+} from '@grafana/ui';
 const properties: GrafanaDatasourceConfigProps = {
   general: {
     useCollapse: true,
   },
   defaultHTTPSettings: {
-    enabled: true,
+    enabled: false,
     defaultURL: 'http://nocode',
   },
   properties: [
-    {
-      key: 'fooString',
-      type: 'string',
-      label: 'Foo',
-      tooltip: 'Foo tooltip',
-    },
-    {
-      key: 'barString',
-      type: 'string',
-      placeholder: 'Bar string value goes here',
-    },
+    { key: 'fooString', type: 'string', label: 'Foo', tooltip: 'Foo tooltip' },
+    { key: 'barString', type: 'string', label: 'Bar', placeholder: 'Bar string value goes here' },
+    { key: 'barInput', type: 'component', label: 'Bar Input', tooltip: 'Bar tooltip', component: Input, class: 'width-20', secure: false },
     {
       key: 'bazString',
       type: 'string',
-      label: ' Bax',
+      label: 'Bax',
       group: 'Group 1',
       placeholder: 'Baz string value goes here',
     },
     {
       key: 'apiKey',
-      type: 'secureString',
+      type: 'string',
       label: 'API Key',
       tooltip: 'Your secure API key',
+      secure: true,
     },
     {
       key: 'magicNumber',
@@ -96,10 +91,11 @@ const properties: GrafanaDatasourceConfigProps = {
     },
     {
       key: 'tlsCACert',
-      type: 'secureString',
+      type: 'string',
       group: 'Outsiders',
       label: 'TLS CA Cert',
       multiLine: true,
+      secure: true,
     },
     {
       key: 'basicAuth',
