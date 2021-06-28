@@ -150,7 +150,7 @@ export const NoCodeConfigComponent = (props: NoCodeConfigComponentProps) => {
                       onChange: (e: any) => !prop.secure ? onJSONOptionsChange(prop.key, e.value, prop.type, prop.outsideJSON) : onSecureJSONOptionsChange(prop.key, e.value)
                     })
                   }
-                  {['string', 'number'].includes(prop.type) && (
+                  {['string', 'number'].includes(prop.type) && !prop.secure && (
                     <>
                       {prop.options && prop.options.length > 0 ? (
                         <Select
