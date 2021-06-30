@@ -1,10 +1,9 @@
 import React from 'react';
 import { DataSourcePluginOptionsEditorProps } from '@grafana/data';
+import { Input } from '@grafana/ui';
 import { NoCodeConfigComponent, GrafanaDatasourceConfigProps } from './components/NoCodeConfig';
 import { NoCodeJsonOptions } from './types';
-import {
-  Input,
-} from '@grafana/ui';
+
 const properties: GrafanaDatasourceConfigProps = {
   general: {
     useCollapse: true,
@@ -14,9 +13,29 @@ const properties: GrafanaDatasourceConfigProps = {
     defaultURL: 'http://nocode',
   },
   properties: [
-    { key: 'fooString', type: 'string', label: 'Foo', tooltip: 'Foo tooltip' },
-    { key: 'barString', type: 'string', label: 'Bar', placeholder: 'Bar string value goes here' },
-    { key: 'barInput', type: 'component', label: 'Bar Input', tooltip: 'Bar tooltip', component: Input, class: 'width-20', secure: false },
+    {
+      key: 'fooString',
+      type: 'string',
+      label: 'Foo String',
+      tooltip: 'Foo tooltip goes here',
+      placeholder: 'Foo String',
+    },
+    {
+      key: 'barString',
+      type: 'string',
+      label: 'Bar String',
+      tooltip: 'Bar tooltip goes here',
+      placeholder: 'Bar string value goes here',
+    },
+    {
+      key: 'barInput',
+      type: 'component',
+      label: 'Bar Input',
+      tooltip: 'Bar tooltip',
+      component: Input,
+      class: 'width-20',
+      secure: false,
+    },
     {
       key: 'bazString',
       type: 'string',

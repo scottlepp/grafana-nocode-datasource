@@ -136,20 +136,24 @@ export const NoCodeConfigComponent = (props: NoCodeConfigComponentProps) => {
           <GroupWrapper name={g.name} key={g.name} useCollapse={editorProps.general?.useCollapse}>
             {g.props.map((prop: EditorProperty) => {
               return (
-                <div className="gf-form" key={JSON.stringify(prop)}>
-                  {prop.label && 
-                    <InlineFormLabel className="width-13" tooltip={prop.tooltip}>
+                <div className="gf-form max-width-30" key={JSON.stringify(prop)}>
+                  {prop.label && (
+                    <InlineFormLabel className="width-10" tooltip={prop.tooltip}>
                       {prop.label || prop.key}
                     </InlineFormLabel>
-                  }
-                  {'component' === prop.type && 
+                  )}
+                  {'component' === prop.type &&
                     React.createElement(prop.component, {
                       key: prop.key,
                       className: prop.class,
-                      value: !prop.secure ? getValueFromOptions(prop.key, prop.outsideJSON) : getSecureValueFromOptions(prop.key),
-                      onChange: (e: any) => !prop.secure ? onJSONOptionsChange(prop.key, e.value, prop.type, prop.outsideJSON) : onSecureJSONOptionsChange(prop.key, e.value)
-                    })
-                  }
+                      value: !prop.secure
+                        ? getValueFromOptions(prop.key, prop.outsideJSON)
+                        : getSecureValueFromOptions(prop.key),
+                      onChange: (e: any) =>
+                        !prop.secure
+                          ? onJSONOptionsChange(prop.key, e.value, prop.type, prop.outsideJSON)
+                          : onSecureJSONOptionsChange(prop.key, e.value),
+                    })}
                   {['string', 'number'].includes(prop.type) && !prop.secure && (
                     <>
                       {prop.options && prop.options.length > 0 ? (
