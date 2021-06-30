@@ -9,6 +9,7 @@ import {
   TextArea,
   Button,
   Select,
+  RadioButtonGroup,
   Switch,
   useTheme,
 } from '@grafana/ui';
@@ -30,6 +31,7 @@ type EditorProperty = {
   placeholder?: string;
   outsideJSON?: boolean;
   options?: Array<SelectableValue<string | number>>;
+  useRadio?: boolean;
   multiLine?: boolean;
   showIf?: EditorPropertyCondition[];
   group?: string;
@@ -196,12 +198,22 @@ export const NoCodeConfigComponent = (props: NoCodeConfigComponentProps) => {
                     {['string', 'number'].includes(prop.type) && !prop.secure && (
                       <>
                         {prop.options && prop.options.length > 0 ? (
-                          <Select
-                            className="width-20"
-                            onChange={(e) => onJSONOptionsChange(prop.key, e.value, prop.type, prop.outsideJSON)}
-                            value={getValueFromOptions(prop.key, prop.outsideJSON)}
-                            options={prop.options}
-                          />
+                          <>
+                            {prop.useRadio ? (
+                              <RadioButtonGroup
+                                options={prop.options}
+                                value={getValueFromOptions(prop.key, prop.outsideJSON)}
+                                onChange={(e) => onJSONOptionsChange(prop.key, e, prop.type, prop.outsideJSON)}
+                              />
+                            ) : (
+                              <Select
+                                className="width-20"
+                                onChange={(e) => onJSONOptionsChange(prop.key, e.value, prop.type, prop.outsideJSON)}
+                                value={getValueFromOptions(prop.key, prop.outsideJSON)}
+                                options={prop.options}
+                              />
+                            )}
+                          </>
                         ) : prop.multiLine ? (
                           <TextArea
                             css={{}}

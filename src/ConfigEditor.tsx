@@ -98,6 +98,7 @@ const properties: GrafanaDatasourceConfigProps = {
           label: 'Rest of the World',
         },
       ],
+      useRadio: true,
     },
     {
       key: 'europeDataCenter',
