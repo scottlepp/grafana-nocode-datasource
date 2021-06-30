@@ -27,6 +27,7 @@
     "@grafana/ui": "7.3.0"
   },
   "devDependencies": {
-    "@grafana/toolkit": "8.0.3"
+    "@grafana/toolkit": "8.0.3",
+    "tslib": "^2.3.0"
   }
 }

@@ -21,6 +21,14 @@ const properties: GrafanaDatasourceConfigProps = {
       placeholder: 'Foo String',
     },
     {
+      key: 'fooStringHelper',
+      type: 'string',
+      label: 'Foo String Helper',
+      tooltip: 'will shown only if foo is one of one,three',
+      placeholder: 'Foo helper',
+      showIf: [{ key: 'fooString', operand: 'in', value: ['one', 'three'] }],
+    },
+    {
       key: 'barString',
       type: 'string',
       label: 'Bar String',
@@ -85,6 +93,56 @@ const properties: GrafanaDatasourceConfigProps = {
           value: 'europe',
           label: 'Europe',
         },
+        {
+          value: 'row',
+          label: 'Rest of the World',
+        },
+      ],
+    },
+    {
+      key: 'europeDataCenter',
+      type: 'string',
+      label: 'Europe data center',
+      tooltip: 'Europe data center',
+      options: [
+        {
+          value: 'london',
+          label: 'London',
+        },
+        {
+          value: 'berlin',
+          label: 'Berlin',
+        },
+      ],
+      showIf: [
+        {
+          key: 'region',
+          operand: '===',
+          value: 'europe',
+        },
+      ],
+    },
+    {
+      key: 'usDataCenter',
+      type: 'string',
+      label: 'US data center',
+      tooltip: 'US data center',
+      options: [
+        {
+          value: 'newYork',
+          label: 'New York',
+        },
+        {
+          value: 'sanJose',
+          label: 'San Jose',
+        },
+      ],
+      showIf: [
+        {
+          key: 'region',
+          operand: '===',
+          value: 'us-east',
+        },
       ],
     },
     {
@@ -92,7 +150,8 @@ const properties: GrafanaDatasourceConfigProps = {
       type: 'number',
       group: 'Group 2',
       label: 'Magic Number 2',
-      tooltip: 'Magic Number tooltip',
+      tooltip: 'Magic Number tooltip will show only if fooString is not one of one, three',
+      showIf: [{ key: 'fooString', operand: 'notin', value: ['one', 'three'] }],
     },
     {
       key: 'magicNumber3',
